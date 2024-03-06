@@ -204,7 +204,7 @@ namespace FivemPlayerlist
             }
             scale = new Scaleform("MP_MM_CARD_FREEMODE");
             var titleIcon = "2";
-            var titleLeftText = "FiveM";
+            var titleLeftText = "洛城飞行大队";
             var titleRightText = $"Players {NetworkGetNumConnectedPlayers()}/{maxClients}";
             scale.CallFunction("SET_TITLE", titleLeftText, titleRightText, titleIcon);
             await UpdateScale();
