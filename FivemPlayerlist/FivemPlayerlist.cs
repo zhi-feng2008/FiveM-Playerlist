@@ -63,11 +63,8 @@ namespace FivemPlayerlist
                 await LoadScale();
         }
 
-
-        /// <summary>
-        /// Used to close the page if the regular timer fails to close it for some odd reason.
-        /// </summary>
-        /// <returns></returns>
+        
+        // 用于在常规计时器由于某种奇怪的原因未能关闭页面时关闭页面
         private async Task BackupTimer()
         {
             var timer = GetGameTimer();
@@ -82,18 +79,13 @@ namespace FivemPlayerlist
             }
         }
 
-        /// <summary>
-        /// Updates the max pages to disaplay based on the player count.
-        /// </summary>
+        // 根据玩家数量更新要显示的最大页面数
         private void UpdateMaxPages()
         {
             maxPages = (int)Math.Ceiling((double)new PlayerList().Count() / 16.0);
         }
 
-        /// <summary>
-        /// Manages the display and page setup of the playerlist.
-        /// </summary>
-        /// <returns></returns>
+        // 管理玩家列表的显示和页面设置
         private async Task DisplayController()
         {
             if (Game.IsControlJustPressed(0, Control.MultiplayerInfo))
@@ -139,19 +131,13 @@ namespace FivemPlayerlist
             }
         }
 
-        /// <summary>
-        /// Updates the max players (triggered from server event)
-        /// </summary>
-        /// <param name="count"></param>
+        // 更新最大玩家数量（由服务器事件触发）
         private void SetMaxPlayers(int count)
         {
             maxClients = count;
         }
-
-        /// <summary>
-        /// Shows the scoreboard.
-        /// </summary>
-        /// <returns></returns>
+        
+        // 显示计分板
         private async Task ShowScoreboard()
         {
             if (maxClients != -1)
@@ -182,11 +168,8 @@ namespace FivemPlayerlist
                 }
             }
         }
-
-        /// <summary>
-        /// Loads the scaleform.
-        /// </summary>
-        /// <returns></returns>
+        
+        // 加载界面样式
         private async Task LoadScale()
         {
             if (scale != null)
@@ -205,15 +188,13 @@ namespace FivemPlayerlist
             scale = new Scaleform("MP_MM_CARD_FREEMODE");
             var titleIcon = "2";
             var titleLeftText = "洛城飞行大队";
-            var titleRightText = $"Players {NetworkGetNumConnectedPlayers()}/{maxClients}";
+            var titleRightText = $"玩家 {NetworkGetNumConnectedPlayers()}/{maxClients}";
             scale.CallFunction("SET_TITLE", titleLeftText, titleRightText, titleIcon);
             await UpdateScale();
             scale.CallFunction("DISPLAY_VIEW");
         }
 
-        /// <summary>
-        /// Struct used for the player info row options.
-        /// </summary>
+        // 用于玩家信息行选项的结构
         struct PlayerRow
         {
             public int serverId;
@@ -252,17 +233,13 @@ namespace FivemPlayerlist
             public char friendType;
         }
 
-        /// <summary>
-        /// Returns the ped headshot string used for the image of the ped for each row.
-        /// </summary>
-        /// <param name="ped"></param>
-        /// <returns></returns>
+        // 返回用于每一行中的角色头像图片的 ped 头像字符串
         private async Task<string> GetHeadshotImage(int ped)
         {
             var headshotHandle = RegisterPedheadshot(ped);
-            /*
-             * For some reason, the below loop didn't work originally without the Valid check or the re-registering of the headshot
-             */
+            
+            // 由于某种原因，原始的循环在没有 Valid 检查或重新注册头像的情况下无法正常工作
+                
             while (!IsPedheadshotReady(headshotHandle) || !IsPedheadshotValid(headshotHandle))
             {
                 headshotHandle = RegisterPedheadshot(ped);
@@ -270,16 +247,13 @@ namespace FivemPlayerlist
             }
             return GetPedheadshotTxdString(headshotHandle) ?? "";
         }
-
-        /// <summary>
-        /// Updates the scaleform settings.
-        /// </summary>
-        /// <returns></returns>
+        
+        // 更新比例尺设置
         private async Task UpdateScale()
         {
             List<PlayerRow> rows = new List<PlayerRow>();
 
-            for (var x = 0; x < 150; x++) // cleaning up in case of a reload, this frees up all ped headshot handles :)
+            for (var x = 0; x < 150; x++) // 在重新加载时进行清理，这将释放所有 ped 头像句柄 :)
             {
                 UnregisterPedheadshot(x);
             }
@@ -289,7 +263,7 @@ namespace FivemPlayerlist
             {
                 if (IsRowSupposedToShow(amount))
                 {
-                    PlayerRow row = new PlayerRow(); // Set as a blank PlayerRow obj
+                    PlayerRow row = new PlayerRow(); // 设置为空白的 PlayerRow 对象
 
                     if (playerConfigs.ContainsKey(p.ServerId))
                     {
@@ -363,12 +337,8 @@ namespace FivemPlayerlist
 
             await Delay(0);
         }
-
-        /// <summary>
-        /// Used to check if the row from the loop is supposed to be displayed based on the current page view.
-        /// </summary>
-        /// <param name="row"></param>
-        /// <returns></returns>
+        
+        // 用于检查循环中的行是否应根据当前页面视图显示
         private bool IsRowSupposedToShow(int row)
         {
             if (currentPage > 0)
@@ -384,10 +354,7 @@ namespace FivemPlayerlist
             return false;
         }
 
-        /// <summary>
-        /// Update the "textureCache" Dictionary with headshots of the players online.
-        /// </summary>
-        /// <returns></returns>
+        // 更新 "textureCache" 字典以存储在线玩家的头像
         private async Task UpdateHeadshots()
         {
             PlayerList playersToCheck = new PlayerList();
